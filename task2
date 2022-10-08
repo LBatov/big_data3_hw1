@@ -1,0 +1,42 @@
+1. [2 балла] Создайте папку в корневой HDFS-папке
+	hdfs dfs -mkdir -p test_dir
+2. [2 балла] Создайте в созданной папке новую вложенную папку.
+	hdfs dfs -mkdir test_dir/inner
+3. [3 балла] Что такое Trash в распределенной FS? Как сделать так, чтобы файлы удалялись сразу, минуя “Trash”?
+	Trash - папка в которую попадают удаленные файлы(если влезают). Их можно восстановить. Флаг -skipTrash удаляет файлы окончательно
+4. [2 балла] Создайте пустой файл в подпапке из пункта 2.
+	hdfs dfs -touchz test_dir/inner/sample.txt
+5. [2 балла] Удалите созданный файл.
+	hdfs dfs -rm -skipTrash test_dir/inner/sample.txt
+	Deleted test_dir/inner/sample.txt
+6. [2 балла] Удалите созданные папки.
+	hdfs dfs -rm -r test_dir
+	Deleted test_dir
+См. флаги “-put”, “-cat”, “-tail”, “-cp”
+1. [3 балла] Скопируйте любой в новую папку на HDFS
+	echo "it's a dog" > duck.txt    файл на файловой системе ноды
+	hdfs dfs -put -p duck.txt new_test_dir/
+2. [3 балла] Выведите содержимое HDFS-файла на экран.
+	hdfs dfs -cat new_test_dir/duck.txt
+3. [3 балла] Выведите содержимое нескольких последних строчек HDFS-файла на экран.
+    hdfs dfs -tail new_test_dir/duck.txt
+4. [3 балла] Выведите содержимое нескольких первых строчек HDFS-файла на экран.
+    hdfs dfs -cat new_test_dir/duck.txt | head
+    внезапно сработало и вот это: dfs dfs -head new_test_dir/duck.txt 
+5. [3 балла] Переместите копию файла в HDFS на новую локацию.
+    hdfs dfs -mkdir new_test_dir3
+	hdfs dfs -cp -p new_test_dir/duck.txt new_test_dir3/
+
+
+
+2. [4 баллов] Изменить replication factor для файла. Как долго занимает время на увеличение /
+уменьшение числа реплик для файла?
+	hdfs dfs -setrep -w 1 new_test_dir3/duck.txt
+	hdfs dfs -setrep -w 3 new_test_dir3/duck.txt
+	Секунды, но на больших объемах уменьшение будет работать дольше.
+3. [4 баллов] Найдите информацию по файлу, блокам и их расположениям с помощью “hdfs fsck”
+	 hdfs fsck  new_test_dir3/duck.txt -files -blocks -locations
+4. [4 баллов] Получите информацию по любому блоку из п.2 с помощью "hdfs fsck -blockId”.
+Обратите внимание на Generation Stamp (GS number).
+	hdfs fsck -blockId blk_1073741842
+	
